@@ -1,6 +1,6 @@
 
 //Selectors
-const $taskInput = document.querySelector('.task-Input');
+const $taskInput = document.querySelector('.task-input');
 const $taskButton = document.querySelector('.task-button');
 const $taskContainer = document.querySelector('.task-container');
 const $taskList = document.querySelector('.task-list')
@@ -19,21 +19,19 @@ function addToDo(event){
 const toDoDiv = document.createElement("div");
 toDoDiv.classList.add("toDo");
 //Create LI
- const newToDo= document.createElement('li');
- newToDo.innerText = 'hey';
- newToDo.classList.add('toDoItem')
- toDoDiv.appendChild(newToDo);
- //Check mark button
- const completedButton = document.createElement('button');
- completedButton.innerHTML= '<i class= "fas fa-check"></i>';
- completedButton.classList.add("complete-button");
- toDoDiv.appendChild(completedButton);
+createChild(toDoDiv,'li', $taskInput.value ,'toDoItem');
 
- const trashButton = document.createElement('button');
- trashButton.innerHTML= '<i class= "fas fa-trash"></i>';
- trashButton.classList.add("trash-button");
- toDoDiv.appendChild(trashButton);
+ //Check mark button
+ createChild(toDoDiv,'button','<i class= "fas fa-check"></i>','complete-button');
+
+ createChild(toDoDiv,'button','<i class= "fas fa-trash"></i>',"trash-button");
  //Append to list
  $taskList.appendChild(toDoDiv);
  
 }
+function createChild(parent,elementName, html, classList){
+    const element = document.createElement(elementName);
+    element.innerHTML = html;
+    element.classList.add(classList);
+    parent.appendChild(element)
+ }
