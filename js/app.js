@@ -6,10 +6,14 @@ const $taskContainer = document.querySelector('.task-container');
 const $taskList = document.querySelector('.task-list')
 const $filterOption = document.querySelector(".filter-todo")
 
+
 let toDoList = JSON.parse(localStorage.getItem("toDos"));
-toDoList.forEach(element => {
-    addToDoToHtml(element);
-});
+if (toDoList != null) {
+    toDoList.forEach(element => {
+        addToDoToHtml(element.value, element.state);
+    });
+
+}
 //Event Listeners
 $taskButton.addEventListener('click', addToDo)
 $taskList.addEventListener('click', deleteCheck);
@@ -34,11 +38,15 @@ function createChild(parent, elementName, html, classList) {
     element.classList.add(classList);
     parent.appendChild(element)
 }
-function addToDoToHtml(toDoValue) {
+function addToDoToHtml(value, state = "uncompleted") {
     const toDoDiv = document.createElement("div");
     toDoDiv.classList.add("toDo");
+    if (state === "completed") {
+        toDoDiv.classList.add("completed")
+    }
+
     //Create LI
-    createChild(toDoDiv, 'li', toDoValue, 'toDoItem');
+    createChild(toDoDiv, 'li', value, 'toDoItem');
 
     //Check mark button
     createChild(toDoDiv, 'button', '<i class= "fas fa-check"></i>', 'complete-button');
@@ -62,6 +70,7 @@ function deleteCheck(event) {
     else if (item.classList[0] === "complete-button") {
         const taskToCheck = item.parentElement;
         taskToCheck.classList.toggle('completed')
+
     }
 }
 function filterToDo(event) {
@@ -97,18 +106,32 @@ function saveLocalToDos(toDo) {
     } else {
         toDos = JSON.parse(localStorage.getItem('toDos'));
     }
-    toDos.push(toDo);
+    const localToDo = {
+        value: toDo,
+        state: "uncompleted"
+    }
+    toDos.push(localToDo);
     localStorage.setItem('toDos', JSON.stringify(toDos));
 
 }
-function removeLocalToDos(toDo){
-let toDos;
+function removeLocalToDos(toDo) {
+    let toDos;
     if (localStorage.getItem('toDos') === null) {
         toDos = [];
     } else {
         toDos = JSON.parse(localStorage.getItem('toDos'));
     }
     const todoIndex = toDo.children[0].innerText;
-    toDos.splice(toDos.indexOf(todoIndex),1);
-    localStorage.setItem("toDos",JSON.stringify(toDos));
+    toDos.splice(toDos.indexOf(todoIndex), 1);
+    localStorage.setItem("toDos", JSON.stringify(toDos));
+    
+}
+
+function updateLocalStorage(toDo){
+    let toDos;
+    if (localStorage.getItem('toDos') === null) {
+        toDos = [];
+    } else {
+        toDos = JSON.parse(localStorage.getItem('toDos'));
+    }
 }
