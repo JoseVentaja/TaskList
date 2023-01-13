@@ -6,6 +6,10 @@ const $taskContainer = document.querySelector('.task-container');
 const $taskList = document.querySelector('.task-list')
 const $filterOption = document.querySelector(".filter-todo")
 
+let toDoList = JSON.parse(localStorage.getItem("toDos"));
+toDoList.forEach(element => {
+    addToDoToHtml(element);
+});
 //Event Listeners
 $taskButton.addEventListener('click', addToDo)
 $taskList.addEventListener('click', deleteCheck);
@@ -18,17 +22,9 @@ function addToDo(event) {
     event.preventDefault();
 
     //List Div
-    const toDoDiv = document.createElement("div");
-    toDoDiv.classList.add("toDo");
-    //Create LI
-    createChild(toDoDiv, 'li', $taskInput.value, 'toDoItem');
-
-    //Check mark button
-    createChild(toDoDiv, 'button', '<i class= "fas fa-check"></i>', 'complete-button');
-
-    createChild(toDoDiv, 'button', '<i class= "fas fa-trash"></i>', "trash-button");
-    //Append to list
-    $taskList.appendChild(toDoDiv);
+    addToDoToHtml($taskInput.value);
+    //ADD TO DO TO LOCALSTORE
+    saveLocalToDos($taskInput.value)
     $taskInput.value = '';
 
 }
@@ -38,12 +34,26 @@ function createChild(parent, elementName, html, classList) {
     element.classList.add(classList);
     parent.appendChild(element)
 }
+function addToDoToHtml(toDoValue) {
+    const toDoDiv = document.createElement("div");
+    toDoDiv.classList.add("toDo");
+    //Create LI
+    createChild(toDoDiv, 'li', toDoValue, 'toDoItem');
+
+    //Check mark button
+    createChild(toDoDiv, 'button', '<i class= "fas fa-check"></i>', 'complete-button');
+
+    createChild(toDoDiv, 'button', '<i class= "fas fa-trash"></i>', "trash-button");
+    //Append to list
+    $taskList.appendChild(toDoDiv);
+}
 
 function deleteCheck(event) {
     const item = event.target;
     if (item.classList[0] === "trash-button") {
         const taskToRemove = item.parentElement;
         taskToRemove.classList.add('fall');
+        removeLocalToDos(taskToRemove);
         taskToRemove.addEventListener('transitionend', function () {
             taskToRemove.remove();
         });
@@ -78,4 +88,27 @@ function filterToDo(event) {
                 break;
         }
     })
+}
+function saveLocalToDos(toDo) {
+    //Check --- Do i already have thing in there?
+    let toDos;
+    if (localStorage.getItem('toDos') === null) {
+        toDos = [];
+    } else {
+        toDos = JSON.parse(localStorage.getItem('toDos'));
+    }
+    toDos.push(toDo);
+    localStorage.setItem('toDos', JSON.stringify(toDos));
+
+}
+function removeLocalToDos(toDo){
+let toDos;
+    if (localStorage.getItem('toDos') === null) {
+        toDos = [];
+    } else {
+        toDos = JSON.parse(localStorage.getItem('toDos'));
+    }
+    const todoIndex = toDo.children[0].innerText;
+    toDos.splice(toDos.indexOf(todoIndex),1);
+    localStorage.setItem("toDos",JSON.stringify(toDos));
 }
